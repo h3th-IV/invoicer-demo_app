@@ -1,8 +1,8 @@
 # Invoicing Application
 
 ## Project Setup
-1. Clone the repository: `git clone <your-repo-url>`
-2. Navigate to the root directory: `cd invoicing-app`
+1. Clone the repository: `git clone https://github.com/h3th-IV/invoicer-demo_app.git`
+2. Navigate to the root directory: `cd invoicer-demo_app`
 3. Run Docker Compose: `docker-compose up --build`
 4. Access the app:
    - Frontend: `http://localhost:3000`
