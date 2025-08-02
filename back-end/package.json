@@ -1,0 +1,30 @@
+{
+  "name": "back-end",
+  "version": "1.0.0",
+  "description": "invoicer back-end",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/h3th-IV/invoicer-demo_app.git"
+  },
+  "author": "h3th-IV",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/h3th-IV/invoicer-demo_app/issues"
+  },
+  "homepage": "https://github.com/h3th-IV/invoicer-demo_app#readme",
+  "dependencies": {
+    "colors": "^1.4.0",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "csurf": "^1.11.0",
+    "dotenv": "^17.2.1",
+    "express": "^5.1.0",
+    "express-session": "^1.18.2",
+    "mongoose": "^8.17.0",
+    "passport": "^0.7.0"
+  }
+}
