@@ -5,5 +5,6 @@ const InvoiceController = require('../controllers/invoiceController');
 router.post('/create', InvoiceController.createInvoice);
 router.get('/list', InvoiceController.getInvoices);
 router.put('/update-status/:id', InvoiceController.updateStatus);
+router.get('/:id', InvoiceController.getSingleInvoice);
 
 module.exports = router;

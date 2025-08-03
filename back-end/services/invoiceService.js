@@ -13,74 +13,109 @@ module.exports = class InvoiceService {
    */
     static async validateAndLinkItems(itemIds, quantities) {
         try {
-          if (!Array.isArray(itemIds) || !Array.isArray(quantities) || itemIds.length !== quantities.length) {
-            return { success: false, message: 'Invalid item IDs or quantities array' };
-          }
-      
-          const items = await Item.find({ _id: { $in: itemIds }, status: 'in-stock' });
-          if (items.length !== itemIds.length) {
-            return { success: false, message: 'Some items are out of stock or invalid' };
-          }
-      
-          // Validate and reduce quantities
-          for (let i = 0; i < items.length; i++) {
-            const item = items[i];
-            const requestedQty = quantities[i];
-            if (item.quantity < requestedQty) {
-              return { success: false, message: `Insufficient stock for ${item.name}` };
+            if (!Array.isArray(itemIds) || !Array.isArray(quantities) || itemIds.length !== quantities.length) {
+                return { success: false, message: 'Invalid item IDs or quantities array' };
             }
-            await Item.findByIdAndUpdate(item._id, { $inc: { quantity: -requestedQty } });
-            if (item.quantity - requestedQty === 0) {
-              await Item.findByIdAndUpdate(item._id, { status: 'out-of-stock' });
+            //step 1: Fetch ALL items (including out-of-stock) to get their names for error messages
+            const allItems = await Item.find({ _id: { $in: itemIds } });
+            const inStockItems = allItems.filter(item => item.status === 'in-stock');
+            // Create map for fast lookup
+            const itemMap = new Map(inStockItems.map(item => [item._id.toString(), item]));
+            const nameMap = new Map(allItems.map(item => [item._id.toString(), item.name]));
+            //Step 2: Validate each requested item
+            for (let i = 0; i < itemIds.length; i++) {
+                const itemId = itemIds[i];
+                const requestedQty = quantities[i];
+                const itemName = nameMap.get(itemId) || 'Unknown Item';
+                // Check if item exists and is in stock
+                const item = itemMap.get(itemId);
+                if (!item) {
+                    // Item doesn't exist OR is out of stock
+                    const status = nameMap.has(itemId) ? 'out of stock' : 'not found';
+                    return {
+                        success: false,
+                        message: `Item "${itemName}" is ${status}`
+                    };
+                }
+                if (item.quantity < requestedQty) {
+                    return {
+                        success: false,
+                        message: `Insufficient stock for "${itemName}". Available: ${item.quantity}, Requested: ${requestedQty}`
+                    };
+                }
             }
-          }
-      
-          return { success: true, data: items };
+            //tep 3: Deduct quantities (only for in-stock items, which we've already validated)
+            for (let i = 0; i < itemIds.length; i++) {
+                const itemId = itemIds[i];
+                const requestedQty = quantities[i];
+    
+                await Item.findByIdAndUpdate(itemId, { $inc: { quantity: -requestedQty } });
+    
+                const item = itemMap.get(itemId);
+                if (item.quantity - requestedQty <= 0) {
+                    await Item.findByIdAndUpdate(itemId, { status: 'out-of-stock' });
+                }
+            }
+            //return items in input order
+            const orderedItems = itemIds
+                .map(id => itemMap.get(id))
+                .filter(Boolean);
+    
+            return { success: true, data: orderedItems };
         } catch (error) {
-          console.error('Error validating and linking items:', error);
-          return { success: false, message: 'Could not validate and link items' };
+            console.error('Error validating and linking items:', error);
+            return { success: false, message: 'Could not validate and link items' };
         }
     }
 
-
     /**
-   * @description Creates a new invoice with the provided details, including client association and item validation.
-   * @param {Object} params - Invoice creation parameters.
-   * @param {Date} params.issueDate - The date the invoice is issued.
-   * @param {Date} params.dueDate - The due date for the invoice payment.
-   * @param {string} params.clientId - The MongoDB ID of the associated client.
-   * @param {Array<Object>} params.items - Array of items with _id and quantity (e.g., [{ _id: 'itemId', quantity: 2 }]).
-   * @returns {Object} - Response object with { success, data: invoice, message } indicating success or failure.
-   * @throws {Error} - If validation fails or database operations encounter issues.
-   * @how - Validates client existence, checks item availability, calculates total, generates a unique invoice number, and saves the invoice.
-   */
+     * @description Creates a new invoice with the provided details, including client association and item validation.
+     * @param {Object} params - Invoice creation parameters.
+     * @param {Date} params.issueDate - The date the invoice is issued.
+     * @param {Date} params.dueDate - The due date for the invoice payment.
+     * @param {string} params.clientId - The MongoDB ID of the associated client.
+     * @param {Array<Object>} params.items - Array of items with _id and quantity (e.g., [{ _id: 'itemId', quantity: 2 }]).
+     * @returns {Object} - Response object with { success, data: invoice, message } indicating success or failure.
+     * @throws {Error} - If validation fails or database operations encounter issues.
+     * @how - Validates client existence, checks item availability, calculates total using item unit prices, generates a unique invoice number, and saves the invoice.
+     */
     static async createInvoice({ issueDate, dueDate, clientId, items }) {
         try {
-          if (!issueDate || !dueDate || !clientId || !items || !Array.isArray(items)) {
+        if (!issueDate || !dueDate || !clientId || !items || !Array.isArray(items)) {
             return { success: false, message: 'Missing or invalid required fields' };
-          }
-      
-          const client = await Client.findById(clientId);
-          if (!client) {
+        }
+
+        const client = await Client.findById(clientId);
+        if (!client) {
             return { success: false, message: 'Client not found' };
-          }
-      
-          const itemIds = items.map(item => item._id);
-          const quantities = items.map(item => item.quantity);
-          const validationResult = await validateAndLinkItems(itemIds, quantities);
-          if (!validationResult.success) {
+        }
+
+        const itemIds = items.map(item => item._id);
+        const quantities = items.map(item => item.quantity);
+        const validationResult = await this.validateAndLinkItems(itemIds, quantities);
+        if (!validationResult.success) {
             return validationResult;
-          }
-      
-          const total = items.reduce((sum, item) => sum + (item.quantity * item.unitPrice), 0);
-          const invoiceNumber = `INV-${Date.now()}`;
-          const invoice = new Invoice({ invoiceNumber, issueDate, dueDate, client: clientId, items: itemIds, total });
-          await invoice.save();
-      
-          return { success: true, data: invoice };
+        }
+
+        // Fetch items to get unitPrice for total calculation
+        const dbItems = await Item.find({ _id: { $in: itemIds } }).sort({ _id: 1 });
+        const total = dbItems.reduce((sum, item, index) => {
+            const qty = quantities[index];
+            return sum + (qty * item.unitPrice);
+        }, 0);
+
+        if (isNaN(total) || total < 0) {
+            return { success: false, message: 'Invalid total calculation' };
+        }
+
+        const invoiceNumber = `INV-${Date.now()}`;
+        const invoice = new Invoice({ invoiceNumber, issueDate, dueDate, client: clientId, items: itemIds, total });
+        await invoice.save();
+
+        return { success: true, data: invoice };
         } catch (error) {
-          console.error('Error creating invoice:', error);
-          return { success: false, message: 'Could not create invoice' };
+        console.error('Error creating invoice:', error);
+        return { success: false, message: 'Could not create invoice' };
         }
     }
 
@@ -163,6 +198,33 @@ module.exports = class InvoiceService {
         } catch (error) {
           console.error('Error updating invoice status:', error);
           return { success: false, message: 'Could not update invoice status' };
+        }
+    }
+
+        /**
+     * @description Retrieves a single invoice by ID with populated client and items details.
+     * @param {string} invoiceId - The MongoDB ID of the invoice to retrieve.
+     * @returns {Object} - Response object with { success, data: invoice, message } indicating success or failure.
+     * @throws {Error} - If database operations fail.
+     * @how - Finds the invoice by ID and populates client and items fields with their data.
+     */
+    static async getSingleInvoice(invoiceId) {
+        try {
+        if (!invoiceId) {
+            return { success: false, message: 'Invoice ID is required' };
+        }
+    
+        const invoice = await Invoice.findById(invoiceId)
+            .populate('client', 'name phone_number email address billingAddress')
+            .populate('items', 'name unitPrice');
+        if (!invoice) {
+            return { success: false, message: 'Invoice not found' };
+        }
+    
+        return { success: true, data: invoice };
+        } catch (error) {
+        console.error('Error retrieving invoice:', error);
+        return { success: false, message: 'Could not retrieve invoice' };
         }
     }
 };
