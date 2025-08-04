@@ -12,9 +12,11 @@ import CreateInvoice from './pages/CreateInvoice';
 import SingleInvoice from './pages/SingleInvoice';
 import Clients from './pages/Clients';
 import CreateClient from './pages/CreateClient';
+import UpdateClient from './pages/UpdateClient';
 import SingleClient from './pages/SingleClient';
 import Items from './pages/Items';
 import CreateItem from './pages/CreateItem';
+import UpdateItem from './pages/UpdateItem';
 import SingleItem from './pages/SingleItem';
 
 // Protected Route Component
@@ -127,6 +129,14 @@ function App() {
                 </ProtectedRoute>
               } />
               
+              <Route path="/clients/:id/edit" element={
+                <ProtectedRoute allowedRoles={['staff']}>
+                  <Layout>
+                    <UpdateClient />
+                  </Layout>
+                </ProtectedRoute>
+              } />
+              
               <Route path="/clients/:id" element={
                 <ProtectedRoute>
                   <Layout>
@@ -147,6 +157,14 @@ function App() {
                 <ProtectedRoute allowedRoles={['staff']}>
                   <Layout>
                     <CreateItem />
+                  </Layout>
+                </ProtectedRoute>
+              } />
+              
+              <Route path="/items/:id/edit" element={
+                <ProtectedRoute allowedRoles={['staff']}>
+                  <Layout>
+                    <UpdateItem />
                   </Layout>
                 </ProtectedRoute>
               } />

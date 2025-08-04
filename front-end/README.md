@@ -1,142 +1,261 @@
-# Invoicer Frontend
+# Invoicer Frontend Application
 
-A modern React application for managing invoices, clients, and inventory items.
+## Overview
+This is the frontend application for the Invoicer system, built with React and Tailwind CSS. It provides a modern, responsive user interface for managing invoices, clients, and inventory.
 
-## Features
+## Architecture
 
-- **Dashboard**: Overview with statistics and recent invoices
-- **Invoice Management**: Create, view, and manage invoices with status updates
-- **Client Management**: Add, edit, and manage client information
-- **Inventory Management**: Track items, quantities, and stock levels
-- **Responsive Design**: Works on desktop and mobile devices
-- **Real-time Updates**: Automatic stock reduction when invoices are created
+### Tech Stack
+- **Framework**: React 18.2.0
+- **Routing**: React Router DOM 6.3.0
+- **Styling**: Tailwind CSS 3.3.0
+- **HTTP Client**: Axios 1.4.0
+- **Icons**: Lucide React 0.263.1
+- **Notifications**: React Hot Toast 2.4.1
+- **Date Handling**: date-fns 2.30.0
+- **Build Tool**: Create React App 5.0.1
 
-## Technology Stack
-
-- **React 18**: Modern React with hooks
-- **Tailwind CSS**: Utility-first CSS framework
-- **React Router**: Client-side routing
-- **Axios**: HTTP client for API calls
-- **Lucide React**: Beautiful icons
-- **React Hot Toast**: Toast notifications
-- **Date-fns**: Date formatting utilities
-
-## Getting Started
-
-### Prerequisites
-
-- Node.js 18 or higher
-- Backend API running on `http://localhost:5000`
-
-### Installation
-
-1. Install dependencies:
-```bash
-npm install
+### Project Structure
+```
+front-end/
+├── public/
+│   └── index.html              # Main HTML template
+├── src/
+│   ├── components/
+│   │   └── Layout.js           # Main layout component with sidebar
+│   ├── context/
+│   │   ├── AppContext.js       # Global application state
+│   │   └── AuthContext.js      # Authentication state management
+│   ├── pages/
+│   │   ├── Dashboard.js        # Main dashboard with statistics
+│   │   ├── Login.js            # Staff login page
+│   │   ├── Register.js         # Staff registration page
+│   │   ├── Invoices.js         # Invoice listing page
+│   │   ├── CreateInvoice.js    # Invoice creation form
+│   │   ├── SingleInvoice.js    # Single invoice details
+│   │   ├── Clients.js          # Client listing page
+│   │   ├── CreateClient.js     # Client creation form
+│   │   ├── UpdateClient.js     # Client update form
+│   │   ├── SingleClient.js     # Single client details
+│   │   ├── Items.js            # Item listing page
+│   │   ├── CreateItem.js       # Item creation form
+│   │   ├── UpdateItem.js       # Item update form
+│   │   └── SingleItem.js       # Single item details
+│   ├── services/
+│   │   └── api.js              # API service functions
+│   ├── utils/
+│   │   └── errorHandler.js     # Error handling utilities
+│   ├── App.js                  # Main application component
+│   ├── index.js                # Application entry point
+│   └── index.css               # Global styles
+├── package.json                # Dependencies and scripts
+├── tailwind.config.js          # Tailwind CSS configuration
+└── postcss.config.js           # PostCSS configuration
 ```
 
-2. Create environment file:
-```bash
-echo "REACT_APP_API_BASE_URL=http://localhost:5000" > .env
-```
+## Features Implemented
 
-3. Start the development server:
-```bash
-npm start
-```
+### Authentication System
+- **Staff Login**: Secure login with email and password
+- **Staff Registration**: New staff member registration
+- **JWT Token Management**: Automatic token handling and refresh
+- **Protected Routes**: Role-based access control
+- **Session Persistence**: Automatic login state restoration
 
-The application will be available at `http://localhost:3000`.
+### Dashboard
+- **Statistics Overview**: Total invoices, clients, items, and revenue
+- **Recent Invoices**: Latest 5 invoices with overdue highlighting
+- **Quick Actions**: Direct links to create invoices, clients, and items
+- **Overdue Alerts**: Visual indicators for overdue invoices
+- **Real-time Data**: Live statistics and recent activity
 
-### Building for Production
+### Invoice Management
+- **Invoice Creation**: 
+  - Multi-step form with client and item selection
+  - Real-time total calculation
+  - Stock validation and availability checking
+  - Auto-generated invoice numbers
+- **Invoice Listing**: 
+  - Paginated table with sorting
+  - Status filtering (paid/unpaid)
+  - Search functionality
+  - Overdue detection and highlighting
+- **Invoice Details**: 
+  - Complete invoice information display
+  - Client and item details
+  - Status management (paid/unpaid toggle)
+  - Overdue information
 
-```bash
-npm run build
-```
+### Client Management
+- **Client Creation**: Comprehensive client information form
+- **Client Listing**: Paginated table with search and filtering
+- **Client Details**: Complete client profile with statistics
+- **Client Update**: Edit client information form
+- **Client Deletion**: Soft delete with status management
+
+### Inventory Management
+- **Item Creation**: Add new inventory items with pricing
+- **Item Listing**: Paginated table with stock status
+- **Item Details**: Complete item information with usage statistics
+- **Item Update**: Edit item information and pricing
+- **Stock Management**: Mark items as out of stock
+- **Stock Validation**: Prevent overselling during invoice creation
+
+## User Interface Features
+
+### Responsive Design
+- **Mobile-First**: Optimized for all screen sizes
+- **Desktop Layout**: Full-featured desktop interface
+- **Tablet Support**: Responsive breakpoints for tablets
+- **Touch-Friendly**: Optimized for touch interactions
+
+### Navigation
+- **Sidebar Navigation**: Collapsible sidebar with active states
+- **Breadcrumb Navigation**: Clear navigation hierarchy
+- **Quick Actions**: Context-sensitive action buttons
+- **Back Navigation**: Consistent back button behavior
+
+### Data Display
+- **Data Tables**: Sortable and filterable tables
+- **Status Badges**: Color-coded status indicators
+- **Loading States**: Skeleton loaders and spinners
+- **Empty States**: Helpful messages for empty data
+- **Error States**: User-friendly error messages
+
+### Forms and Validation
+- **Form Validation**: Real-time client-side validation
+- **Error Handling**: Comprehensive error messages
+- **Success Feedback**: Toast notifications for actions
+- **Loading States**: Disabled states during operations
+- **Auto-save**: Form data persistence
+
+## Component Architecture
+
+### Context Providers
+- **AuthContext**: Manages authentication state and user data
+- **AppContext**: Manages global application state (sidebar, etc.)
+
+### Layout Components
+- **Layout**: Main application layout with sidebar and header
+- **ProtectedRoute**: Route protection with authentication checks
+- **PublicRoute**: Public routes with authentication redirects
+
+### Page Components
+- **Dashboard**: Main dashboard with statistics and quick actions
+- **Authentication Pages**: Login and registration forms
+- **CRUD Pages**: Create, read, update, delete operations for all entities
+- **Detail Pages**: Comprehensive information display
+
+### Utility Components
+- **Loading Spinner**: Reusable loading indicator
+- **Status Badge**: Status indicator component
+- **Action Button**: Consistent action button styling
+- **Form Fields**: Reusable form input components
+
+## State Management
+
+### Authentication State
+- User information and role
+- Authentication status
+- Token management
+- Login/logout functions
+
+### Application State
+- Sidebar open/close state
+- Global loading states
+- Error states
+- Navigation state
+
+### Data State
+- Entity lists with pagination
+- Form data
+- Search and filter states
+- Loading and error states
 
 ## API Integration
 
-The frontend connects to the following API endpoints:
+### Service Layer
+- **authAPI**: Authentication endpoints
+- **invoiceAPI**: Invoice management endpoints
+- **clientAPI**: Client management endpoints
+- **itemAPI**: Item management endpoints
 
-### Invoices
-- `POST /invoices/create` - Create new invoice
-- `GET /invoices/list` - Get paginated invoice list
-- `PUT /invoices/update-status/:id` - Update invoice status
-- `GET /invoices/:id` - Get single invoice
+### Request/Response Handling
+- **Axios Interceptors**: Automatic token injection
+- **Error Handling**: Centralized error processing
+- **Loading States**: Automatic loading state management
+- **Response Formatting**: Consistent data formatting
 
-### Clients
-- `POST /clients/create` - Create new client
-- `GET /clients/active` - Get active clients
-- `PUT /clients/update/:id` - Update client
-- `DELETE /clients/delete/:id` - Delete client
-- `GET /clients/:id` - Get single client
+## Styling and Design
 
-### Items
-- `POST /items/add` - Add new item
-- `GET /items` - Get paginated item list
-- `PUT /items/update/:id` - Update item
-- `DELETE /items/delete/:id` - Delete item
-- `PUT /items/mark-out-of-stock/:id` - Mark item as out of stock
+### Tailwind CSS
+- **Utility-First**: Rapid UI development
+- **Custom Configuration**: Brand colors and spacing
+- **Responsive Design**: Mobile-first responsive utilities
+- **Component Classes**: Reusable component styles
 
-## Project Structure
+### Design System
+- **Color Palette**: Consistent brand colors
+- **Typography**: Hierarchical text styles
+- **Spacing**: Consistent spacing scale
+- **Components**: Reusable UI components
 
-```
-src/
-├── components/     # Reusable components
-├── context/       # React context for global state
-├── pages/         # Page components
-├── services/      # API service functions
-├── App.js         # Main app component
-└── index.js       # Entry point
-```
+## Performance Optimizations
 
-## Key Features
+### Code Splitting
+- **Route-based Splitting**: Automatic code splitting by routes
+- **Lazy Loading**: Components loaded on demand
+- **Bundle Optimization**: Optimized bundle sizes
 
-### Dashboard
-- Overview statistics (total invoices, clients, items, revenue)
-- Quick action buttons
-- Recent invoices list
+### Data Management
+- **Efficient Queries**: Optimized API calls
+- **Caching**: Browser caching for static assets
+- **Debouncing**: Search input debouncing
+- **Pagination**: Efficient data loading
 
-### Invoice Management
-- Create invoices with multiple items
-- Real-time stock validation
-- Automatic total calculation
-- Status management (paid/unpaid)
-- Pagination and filtering
+## Security Features
 
-### Client Management
-- Add new clients with contact information
-- Search and filter clients
-- Soft delete functionality
-- Responsive card layout
+### Authentication
+- **JWT Tokens**: Secure token-based authentication
+- **Token Refresh**: Automatic token renewal
+- **Logout Handling**: Secure logout with token cleanup
+- **Route Protection**: Protected route components
 
-### Inventory Management
-- Add items with pricing and quantities
-- Stock level tracking
-- Out-of-stock management
-- Total value calculations
+### Data Validation
+- **Client-side Validation**: Real-time form validation
+- **Input Sanitization**: Safe input handling
+- **Error Boundaries**: Graceful error handling
+- **XSS Prevention**: Safe data rendering
 
-## Environment Variables
-
-- `REACT_APP_API_BASE_URL`: Backend API base URL (default: http://localhost:5000)
-
-## Docker
-
-Build and run with Docker:
-
-```bash
-# Build the image
-docker build -t invoicer-frontend .
-
-# Run the container
-docker run -p 3000:3000 invoicer-frontend
-```
+## Browser Support
+- **Modern Browsers**: Chrome, Firefox, Safari, Edge
+- **Mobile Browsers**: iOS Safari, Chrome Mobile
+- **Progressive Enhancement**: Graceful degradation
 
 ## Development
 
-The application uses:
-- **ESLint** for code linting
-- **Prettier** for code formatting
-- **Hot reloading** for development
-- **Error boundaries** for error handling
-- **Loading states** for better UX
-- **Toast notifications** for user feedback 
+### Getting Started
+1. Install dependencies: `npm install`
+2. Start development server: `npm start`
+3. Open browser to `http://localhost:3000`
+
+### Available Scripts
+- `npm start`: Start development server
+- `npm build`: Build for production
+- `npm test`: Run tests
+- `npm eject`: Eject from Create React App
+
+### Environment Variables
+- `REACT_APP_API_BASE_URL`: Backend API URL (default: http://localhost:5000)
+
+## Dependencies
+- react: ^18.2.0
+- react-dom: ^18.2.0
+- react-router-dom: ^6.3.0
+- axios: ^1.4.0
+- lucide-react: ^0.263.1
+- react-hot-toast: ^2.4.1
+- date-fns: ^2.30.0
+- tailwindcss: ^3.3.0
+- autoprefixer: ^10.4.14
+- postcss: ^8.4.24 

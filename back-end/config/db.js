@@ -7,7 +7,7 @@ module.exports.connectDB = async () => {
     try {
         const uri = process.env.NODE_ENV === "production" 
             ? process.env.MONGO_URI 
-            : "mongodb://invoicer:password1234@localhost:27017/invoicing?authSource=admin";
+            : "mongodb://invoicer:password@localhost:27017/invoicing?authSource=admin";
         await mongoose.connect(uri);
         console.log("Database connected".green);
     } catch (error) {

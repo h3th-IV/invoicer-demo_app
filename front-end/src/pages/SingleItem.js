@@ -9,7 +9,8 @@ import {
   CheckCircle,
   Calendar,
   TrendingUp,
-  TrendingDown
+  TrendingDown,
+  FileText
 } from 'lucide-react';
 import { itemAPI, invoiceAPI } from '../services/api';
 import { Link } from 'react-router-dom';
@@ -121,6 +122,13 @@ const SingleItem = () => {
         </div>
         
         <div className="flex items-center space-x-3">
+          <Link
+            to={`/items/${id}/edit`}
+            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-primary-600 hover:bg-primary-700"
+          >
+            <Edit className="h-4 w-4 mr-2" />
+            Edit Item
+          </Link>
           <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${
             item.status === 'in-stock' && item.quantity > 0
               ? 'bg-green-100 text-green-800' 
