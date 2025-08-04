@@ -85,4 +85,15 @@ export const itemAPI = {
   markOutOfStock: (id) => api.put(`/items/mark-out-of-stock/${id}`),
 };
 
+// AI APIs
+export const aiAPI = {
+  query: (data) => api.post('/ai/query', data),
+  getDataSummary: () => api.get('/ai/analytics/summary'),
+  getInsightsDashboard: () => api.get('/ai/insights/dashboard'),
+  getQuerySuggestions: () => api.get('/ai/suggestions'),
+  getChurnRiskAnalysis: () => api.get('/ai/analysis/churn-risk'),
+  getPatternChangeAnalysis: (timeframe) => api.get('/ai/analysis/pattern-changes', { params: { timeframe } }),
+  getClientRecommendations: (clientId) => api.get(`/ai/recommendations/client/${clientId}`),
+};
+
 export default api; 

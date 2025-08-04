@@ -10,7 +10,8 @@ import {
   Plus,
   BarChart3,
   LogOut,
-  User
+  User,
+  Brain
 } from 'lucide-react';
 import { useAppContext } from '../context/AppContext';
 import { useAuth } from '../context/AuthContext';
@@ -26,6 +27,7 @@ const Layout = ({ children }) => {
     { name: 'Invoices', href: '/invoices', icon: FileText, show: true },
     { name: 'Clients', href: '/clients', icon: Users, show: true },
     { name: 'Items', href: '/items', icon: Package, show: true },
+    { name: 'AI Insights', href: '/ai', icon: Brain, show: true },
   ].filter(item => item.show);
 
   const isActive = (path) => {

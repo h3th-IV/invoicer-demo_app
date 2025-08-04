@@ -18,6 +18,7 @@ import Items from './pages/Items';
 import CreateItem from './pages/CreateItem';
 import UpdateItem from './pages/UpdateItem';
 import SingleItem from './pages/SingleItem';
+import AIQuery from './pages/AIQuery';
 
 // Protected Route Component
 const ProtectedRoute = ({ children, allowedRoles = [] }) => {
@@ -173,6 +174,14 @@ function App() {
                 <ProtectedRoute>
                   <Layout>
                     <SingleItem />
+                  </Layout>
+                </ProtectedRoute>
+              } />
+              
+              <Route path="/ai" element={
+                <ProtectedRoute>
+                  <Layout>
+                    <AIQuery />
                   </Layout>
                 </ProtectedRoute>
               } />
