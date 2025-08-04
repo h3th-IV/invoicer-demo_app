@@ -4,14 +4,17 @@ node_modules/
 # Ignore .env files
 .env
 
+# Ignore build artifacts
+build/
+dist/
+
+# Ignore lock files (if not needed)
+package-lock.json
+
 # Ignore Docker-related files
 .Dockerignore
 docker-compose.yml
 docker-compose.*.yml
-
-# Ignore compiled TypeScript files
-/dist/
-/build/
 
 # Ignore log files
 logs/
