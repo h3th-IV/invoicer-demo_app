@@ -54,6 +54,31 @@ module.exports = class ItemController {
   }
 
   /**
+   * @description Retrieves a single item by ID.
+   * @param {Object} req - Express request object with params.
+   * @param {Object} res - Express response object.
+   * @returns {Object} - JSON response with item details or error.
+   */
+  static async getSingleItem(req, res) {
+    try {
+      const { id } = req.params;
+      if (!id) {
+        return errorResponse(res, 400, 'Item ID is required');
+      }
+
+      const response = await ItemService.getSingleItem(id);
+      if (!response.success) {
+        return errorResponse(res, 400, response.message);
+      }
+
+      return successResponse(res, 200, 'Item retrieved successfully', response.data);
+    } catch (error) {
+      console.error('Error in getSingleItem:', error);
+      return errorResponse(res, 500, 'Server error');
+    }
+  }
+
+  /**
    * @description Retrieves a paginated list of all items.
    * @param {Object} req - Express request object with query parameters.
    * @param {Object} res - Express response object.
@@ -127,5 +152,9 @@ module.exports = class ItemController {
       console.error('Error in markOutOfStock:', error);
       return errorResponse(res, 500, 'Server error');
     }
+  }
+
+  static async testEndpoint(req, res) {
+    return successResponse(res, "Got here doi you see");
   }
 };

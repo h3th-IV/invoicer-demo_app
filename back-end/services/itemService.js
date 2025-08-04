@@ -64,6 +64,31 @@ module.exports = class ItemService {
   }
 
   /**
+   * @description Retrieves a single item by ID.
+   * @param {string} itemId - The MongoDB ID of the item to retrieve.
+   * @returns {Object} - Response object with { success, data: item, message } indicating success or failure.
+   * @throws {Error} - If database operations fail.
+   * @how - Queries the database for the item by ID and returns the document.
+   */
+  static async getSingleItem(itemId) {
+    try {
+      if (!itemId) {
+        return { success: false, message: 'Item ID is required' };
+      }
+
+      const item = await Item.findById(itemId);
+      if (!item) {
+        return { success: false, message: 'Item not found' };
+      }
+
+      return { success: true, data: item };
+    } catch (error) {
+      console.error('Error retrieving item:', error);
+      return { success: false, message: 'Could not retrieve item' };
+    }
+  }
+
+  /**
    * @description Retrieves a paginated list of all items with optional search.
    * @param {Object} [params={}] - Pagination and search parameters.
    * @param {number} [params.page=1] - The page number for pagination.

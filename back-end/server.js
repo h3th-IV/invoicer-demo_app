@@ -1,4 +1,5 @@
 const express = require('express');
+const cors = require('cors');
 require('dotenv').config();
 const db = require('./config/db');
 const invoiceRoutes = require('./routes/invoices');
@@ -8,6 +9,12 @@ const itemRoutes = require('./routes/items');
 const app = express();
 
 db.connectDB();
+
+// Enable CORS
+app.use(cors({
+  origin: ['http://localhost:3000', 'http://127.0.0.1:3000'],
+  credentials: true
+}));
 
 app.use(express.json());
 app.use('/invoices', invoiceRoutes);
