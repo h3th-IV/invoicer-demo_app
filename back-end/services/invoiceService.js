@@ -227,4 +227,33 @@ module.exports = class InvoiceService {
         return { success: false, message: 'Could not retrieve invoice' };
         }
     }
+
+    /**
+     * @description Checks if an invoice is overdue
+     * @param {Object} invoice - The invoice object
+     * @returns {boolean} - True if invoice is overdue, false otherwise
+     */
+    static isOverdue(invoice) {
+        const today = new Date();
+        const dueDate = new Date(invoice.dueDate);
+        return dueDate < today && invoice.status !== 'paid';
+    }
+
+    /**
+     * @description Adds overdue information to invoice objects
+     * @param {Array} invoices - Array of invoice objects
+     * @returns {Array} - Array of invoices with overdue information
+     */
+    static addOverdueInfo(invoices) {
+        return invoices.map(invoice => {
+            const invoiceObj = invoice.toObject ? invoice.toObject() : invoice;
+            return {
+                ...invoiceObj,
+                isOverdue: this.isOverdue(invoiceObj),
+                overdueDays: this.isOverdue(invoiceObj) 
+                    ? Math.floor((new Date() - new Date(invoiceObj.dueDate)) / (1000 * 60 * 60 * 24))
+                    : 0
+            };
+        });
+    }
 };

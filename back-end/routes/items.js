@@ -1,12 +1,15 @@
 const express = require('express');
 const router = express.Router();
 const ItemController = require('../controllers/itemController');
+const { authenticateToken } = require('../middleware/auth');
 
-console.log("threader");
+// All item routes require authentication
+router.use(authenticateToken);
+
+// All routes accessible to staff
 router.get('/single/:id', ItemController.getSingleItem);
-console.log('got here');
-router.post('/add', ItemController.addItem);
 router.get('/', ItemController.getAllItems);
+router.post('/add', ItemController.addItem);
 router.put('/update/:id', ItemController.updateItem);
 router.delete('/delete/:id', ItemController.deleteItem);
 router.put('/mark-out-of-stock/:id', ItemController.markOutOfStock);

@@ -10,8 +10,9 @@ module.exports = class InvoiceController {
      */
     static async createInvoice(req, res) {
         try {
-        const { issueDate, dueDate, clientId, items } = req.body;
-        if (!issueDate || !dueDate || !clientId || !items || !Array.isArray(items)) {
+        const { issueDate, dueDate, items, clientId } = req.body;
+        
+        if (!issueDate || !dueDate || !items || !Array.isArray(items) || !clientId) {
             return errorResponse(res, 400, 'Missing or invalid required fields');
         }
 
@@ -36,15 +37,19 @@ module.exports = class InvoiceController {
     static async getInvoices(req, res) {
         try {
         const { page, limit, status } = req.query;
+        
         const response = await InvoiceService.getInvoices({
             page: parseInt(page) || 1,
             limit: parseInt(limit) || 10,
-            status,
+            status
         });
 
         if (!response.success) {
             return errorResponse(res, 400, response.message);
         }
+
+        // Add overdue information to invoices
+        response.data.invoices = InvoiceService.addOverdueInfo(response.data.invoices);
 
         return successResponse(res, 200, 'Invoices retrieved successfully', response.data);
         } catch (error) {
@@ -96,8 +101,11 @@ module.exports = class InvoiceController {
         if (!response.success) {
             return errorResponse(res, 400, response.message);
         }
+
+        // Add overdue information
+        const invoiceWithOverdue = InvoiceService.addOverdueInfo([response.data])[0];
     
-        return successResponse(res, 200, 'Invoice retrieved successfully', response.data);
+        return successResponse(res, 200, 'Invoice retrieved successfully', invoiceWithOverdue);
         } catch (error) {
         console.error('Error in getSingleInvoice:', error);
         return errorResponse(res, 500, 'An unexpected error occurred');

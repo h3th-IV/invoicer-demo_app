@@ -9,9 +9,13 @@ const api = axios.create({
   },
 });
 
-// Request interceptor
+// Request interceptor to add auth token
 api.interceptors.request.use(
   (config) => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
     return config;
   },
   (error) => {
@@ -32,10 +36,27 @@ api.interceptors.response.use(
     if (error.response && error.response.data) {
       console.error('Error Response Data:', error.response.data);
     }
+
+    // Handle 401 errors (unauthorized)
+    if (error.response && error.response.status === 401) {
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      window.location.href = '/login';
+    }
     
     return Promise.reject(error);
   }
 );
+
+// Auth APIs
+export const authAPI = {
+  // Staff authentication
+  registerStaff: (data) => api.post('/auth/staff/register', data),
+  loginStaff: (data) => api.post('/auth/staff/login', data),
+  
+  // Get current user profile
+  getProfile: () => api.get('/auth/profile'),
+};
 
 // Invoice APIs
 export const invoiceAPI = {

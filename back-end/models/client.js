@@ -12,6 +12,9 @@ const clientSchema = new mongoose.Schema({
   email: {
     type: String,
     unique: true,
+    required: true,
+    lowercase: true,
+    trim: true
   },
   address: {
     type: String,
@@ -25,5 +28,10 @@ const clientSchema = new mongoose.Schema({
     default: 'active'
   }
 }, {timestamps: true});
+
+// Method to get public profile
+clientSchema.methods.toPublicJSON = function() {
+  return this.toObject();
+};
 
 module.exports = mongoose.model('Client', clientSchema);

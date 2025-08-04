@@ -29,14 +29,17 @@ const CreateInvoice = () => {
 
   const fetchClientsAndItems = async () => {
     try {
-      const [clientsResponse, itemsResponse] = await Promise.all([
-        clientAPI.getAll({ limit: 100 }),
-        itemAPI.getAll({ limit: 100 })
-      ]);
-
-      setClients(clientsResponse.data.data.clients || []);
+      console.log('Fetching data...');
+      
+      const itemsResponse = await itemAPI.getAll({ limit: 100 });
       setItems(itemsResponse.data.data.items || []);
+
+      const clientsResponse = await clientAPI.getAll({ limit: 100 });
+      const clientsData = clientsResponse.data.data.clients || [];
+      console.log('Clients fetched:', clientsData.length);
+      setClients(clientsData);
     } catch (error) {
+      console.error('Error fetching data:', error);
       handleApiError(error, toast, 'Failed to load clients and items');
     }
   };
@@ -139,7 +142,9 @@ const CreateInvoice = () => {
           </button>
           <div>
             <h1 className="text-2xl font-bold text-gray-900">Create Invoice</h1>
-            <p className="text-gray-600">Generate a new invoice for your client</p>
+            <p className="text-gray-600">
+              Generate a new invoice for your client
+            </p>
           </div>
         </div>
       </div>
@@ -193,6 +198,11 @@ const CreateInvoice = () => {
                   </option>
                 ))}
               </select>
+              {clients.length === 0 && (
+                <p className="text-sm text-red-600 mt-1">
+                  No clients available. Please create clients first.
+                </p>
+              )}
             </div>
           </div>
         </div>

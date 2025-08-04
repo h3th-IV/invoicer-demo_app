@@ -8,17 +8,21 @@ import {
   TrendingUp, 
   TrendingDown,
   Plus,
-  Eye
+  Eye,
+  AlertTriangle
 } from 'lucide-react';
 import { invoiceAPI, clientAPI, itemAPI } from '../services/api';
 import { handleApiError } from '../utils/errorHandler';
+import { useAuth } from '../context/AuthContext';
 import toast from 'react-hot-toast';
 
 const Dashboard = () => {
+  const { user } = useAuth();
   const [stats, setStats] = useState({
     totalInvoices: 0,
     paidInvoices: 0,
     unpaidInvoices: 0,
+    overdueInvoices: 0,
     totalClients: 0,
     totalItems: 0,
     totalRevenue: 0
@@ -34,27 +38,28 @@ const Dashboard = () => {
     try {
       setLoading(true);
       
-      // Fetch invoices
-      const invoicesResponse = await invoiceAPI.getAll({ limit: 100 });
+      // Fetch all data
+      const [invoicesResponse, clientsResponse, itemsResponse] = await Promise.all([
+        invoiceAPI.getAll({ limit: 100 }),
+        clientAPI.getAll({ limit: 100 }),
+        itemAPI.getAll({ limit: 100 })
+      ]);
+      
       const invoices = invoicesResponse.data.data.invoices || [];
-      
-      // Fetch clients
-      const clientsResponse = await clientAPI.getAll({ limit: 100 });
       const clients = clientsResponse.data.data.clients || [];
-      
-      // Fetch items
-      const itemsResponse = await itemAPI.getAll({ limit: 100 });
       const items = itemsResponse.data.data.items || [];
-
+      
       // Calculate stats
       const paidInvoices = invoices.filter(inv => inv.status === 'paid');
       const unpaidInvoices = invoices.filter(inv => inv.status === 'unpaid');
+      const overdueInvoices = invoices.filter(inv => inv.isOverdue);
       const totalRevenue = paidInvoices.reduce((sum, inv) => sum + inv.total, 0);
 
       setStats({
         totalInvoices: invoices.length,
         paidInvoices: paidInvoices.length,
         unpaidInvoices: unpaidInvoices.length,
+        overdueInvoices: overdueInvoices.length,
         totalClients: clients.length,
         totalItems: items.length,
         totalRevenue
@@ -70,7 +75,7 @@ const Dashboard = () => {
     }
   };
 
-  const StatCard = ({ title, value, icon: Icon, color, change }) => (
+  const StatCard = ({ title, value, icon: Icon, color, change, subtitle }) => (
     <div className="bg-white rounded-lg shadow p-6">
       <div className="flex items-center">
         <div className={`p-3 rounded-full ${color}`}>
@@ -79,6 +84,9 @@ const Dashboard = () => {
         <div className="ml-4">
           <p className="text-sm font-medium text-gray-600">{title}</p>
           <p className="text-2xl font-semibold text-gray-900">{value}</p>
+          {subtitle && (
+            <p className="text-sm text-gray-500">{subtitle}</p>
+          )}
           {change && (
             <div className="flex items-center mt-1">
               {change > 0 ? (
@@ -109,7 +117,9 @@ const Dashboard = () => {
       {/* Header */}
       <div>
         <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
-        <p className="text-gray-600">Welcome to your invoice management system</p>
+        <p className="text-gray-600">
+          Welcome back, {user?.name}! Manage your invoicing system
+        </p>
       </div>
 
       {/* Stats Grid */}
@@ -138,6 +148,15 @@ const Dashboard = () => {
           icon={DollarSign}
           color="bg-yellow-500"
         />
+        {stats.overdueInvoices > 0 && (
+          <StatCard
+            title="Overdue Invoices"
+            value={stats.overdueInvoices}
+            icon={AlertTriangle}
+            color="bg-red-500"
+            subtitle="Requires attention"
+          />
+        )}
       </div>
 
       {/* Quick Actions */}
@@ -204,7 +223,12 @@ const Dashboard = () => {
           ) : (
             <div className="divide-y divide-gray-200">
               {recentInvoices.map((invoice) => (
-                <div key={invoice._id} className="px-6 py-4 hover:bg-gray-50">
+                <div 
+                  key={invoice._id} 
+                  className={`px-6 py-4 hover:bg-gray-50 ${
+                    invoice.isOverdue ? 'bg-red-50 border-l-4 border-red-500' : ''
+                  }`}
+                >
                   <div className="flex items-center justify-between">
                     <div className="flex items-center">
                       <FileText className="h-5 w-5 text-gray-400 mr-3" />
@@ -215,15 +239,22 @@ const Dashboard = () => {
                         <p className="text-sm text-gray-600">
                           {invoice.client?.name || 'Unknown Client'}
                         </p>
+                        {invoice.isOverdue && (
+                          <p className="text-sm text-red-600 font-medium">
+                            Overdue by {invoice.overdueDays} days
+                          </p>
+                        )}
                       </div>
                     </div>
                     <div className="flex items-center space-x-4">
                       <span className={`px-2 py-1 text-xs font-medium rounded-full ${
                         invoice.status === 'paid' 
                           ? 'bg-green-100 text-green-800' 
+                          : invoice.isOverdue
+                          ? 'bg-red-100 text-red-800'
                           : 'bg-yellow-100 text-yellow-800'
                       }`}>
-                        {invoice.status}
+                        {invoice.isOverdue ? 'Overdue' : invoice.status}
                       </span>
                       <span className="text-sm font-medium text-gray-900">
                         ${invoice.total}

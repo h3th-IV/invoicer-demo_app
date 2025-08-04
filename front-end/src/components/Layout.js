@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { 
   Menu, 
   X, 
@@ -8,26 +8,36 @@ import {
   Users, 
   Package,
   Plus,
-  BarChart3
+  BarChart3,
+  LogOut,
+  User
 } from 'lucide-react';
 import { useAppContext } from '../context/AppContext';
+import { useAuth } from '../context/AuthContext';
 
 const Layout = ({ children }) => {
   const { sidebarOpen, setSidebarOpen } = useAppContext();
+  const { user, logout } = useAuth();
   const location = useLocation();
+  const navigate = useNavigate();
 
   const navigation = [
-    { name: 'Dashboard', href: '/', icon: Home },
-    { name: 'Invoices', href: '/invoices', icon: FileText },
-    { name: 'Clients', href: '/clients', icon: Users },
-    { name: 'Items', href: '/items', icon: Package },
-  ];
+    { name: 'Dashboard', href: '/', icon: Home, show: true },
+    { name: 'Invoices', href: '/invoices', icon: FileText, show: true },
+    { name: 'Clients', href: '/clients', icon: Users, show: true },
+    { name: 'Items', href: '/items', icon: Package, show: true },
+  ].filter(item => item.show);
 
   const isActive = (path) => {
     if (path === '/') {
       return location.pathname === '/';
     }
     return location.pathname.startsWith(path);
+  };
+
+  const handleLogout = () => {
+    logout();
+    navigate('/login');
   };
 
   return (
@@ -44,6 +54,19 @@ const Layout = ({ children }) => {
           >
             <X size={20} />
           </button>
+        </div>
+        
+        {/* User Info */}
+        <div className="px-6 py-4 border-b border-gray-200">
+          <div className="flex items-center">
+            <div className="flex-shrink-0">
+              <User className="h-8 w-8 text-gray-400" />
+            </div>
+            <div className="ml-3">
+              <p className="text-sm font-medium text-gray-700">{user?.name}</p>
+              <p className="text-xs text-gray-500 capitalize">{user?.type}</p>
+            </div>
+          </div>
         </div>
         
         <nav className="mt-6 px-3">
@@ -71,6 +94,17 @@ const Layout = ({ children }) => {
             })}
           </div>
         </nav>
+
+        {/* Logout Button */}
+        <div className="absolute bottom-0 left-0 right-0 p-3">
+          <button
+            onClick={handleLogout}
+            className="w-full flex items-center px-3 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50 hover:text-gray-900 rounded-md transition-colors"
+          >
+            <LogOut className="mr-3 h-5 w-5 text-gray-400" />
+            Logout
+          </button>
+        </div>
       </div>
 
       {/* Main content */}

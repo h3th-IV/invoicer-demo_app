@@ -7,7 +7,8 @@ import {
   Search,
   Filter,
   ChevronLeft,
-  ChevronRight
+  ChevronRight,
+  AlertTriangle
 } from 'lucide-react';
 import { invoiceAPI } from '../services/api';
 import { handleApiError } from '../utils/errorHandler';
@@ -64,13 +65,15 @@ const Invoices = () => {
     setCurrentPage(1); // Reset to first page when filtering
   };
 
-  const StatusBadge = ({ status }) => (
+  const StatusBadge = ({ status, isOverdue }) => (
     <span className={`px-2 py-1 text-xs font-medium rounded-full ${
       status === 'paid' 
         ? 'bg-green-100 text-green-800' 
+        : isOverdue
+        ? 'bg-red-100 text-red-800'
         : 'bg-yellow-100 text-yellow-800'
     }`}>
-      {status}
+      {isOverdue ? 'Overdue' : status}
     </span>
   );
 
@@ -97,7 +100,9 @@ const Invoices = () => {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Invoices</h1>
-          <p className="text-gray-600">Manage your invoices and track payments</p>
+          <p className="text-gray-600">
+            Manage your invoices and track payments
+          </p>
         </div>
         <Link
           to="/invoices/create"
@@ -187,10 +192,20 @@ const Invoices = () => {
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
                 {invoices.map((invoice) => (
-                  <tr key={invoice._id} className="hover:bg-gray-50">
+                  <tr 
+                    key={invoice._id} 
+                    className={`hover:bg-gray-50 ${
+                      invoice.isOverdue ? 'bg-red-50' : ''
+                    }`}
+                  >
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm font-medium text-gray-900">
-                        {invoice.invoiceNumber}
+                      <div className="flex items-center">
+                        <div className="text-sm font-medium text-gray-900">
+                          {invoice.invoiceNumber}
+                        </div>
+                        {invoice.isOverdue && (
+                          <AlertTriangle className="ml-2 h-4 w-4 text-red-500" />
+                        )}
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
@@ -204,8 +219,15 @@ const Invoices = () => {
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-900">
+                      <div className={`text-sm ${
+                        invoice.isOverdue ? 'text-red-600 font-medium' : 'text-gray-900'
+                      }`}>
                         {format(new Date(invoice.dueDate), 'MMM dd, yyyy')}
+                        {invoice.isOverdue && (
+                          <div className="text-xs text-red-500">
+                            {invoice.overdueDays} days overdue
+                          </div>
+                        )}
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
@@ -214,7 +236,7 @@ const Invoices = () => {
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <StatusBadge status={invoice.status} />
+                      <StatusBadge status={invoice.status} isOverdue={invoice.isOverdue} />
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                       <div className="flex items-center space-x-2">

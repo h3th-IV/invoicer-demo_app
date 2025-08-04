@@ -1,8 +1,11 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import { AppProvider } from './context/AppContext';
+import { AuthProvider, useAuth } from './context/AuthContext';
 import Layout from './components/Layout';
+import Login from './pages/Login';
+import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
 import Invoices from './pages/Invoices';
 import CreateInvoice from './pages/CreateInvoice';
@@ -14,29 +17,156 @@ import Items from './pages/Items';
 import CreateItem from './pages/CreateItem';
 import SingleItem from './pages/SingleItem';
 
+// Protected Route Component
+const ProtectedRoute = ({ children, allowedRoles = [] }) => {
+  const { isAuthenticated, loading, user } = useAuth();
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
+      </div>
+    );
+  }
+
+  if (!isAuthenticated) {
+    return <Navigate to="/login" replace />;
+  }
+
+  if (allowedRoles.length > 0 && !allowedRoles.includes(user?.type)) {
+    return <Navigate to="/" replace />;
+  }
+
+  return children;
+};
+
+// Public Route Component (redirects to dashboard if already authenticated)
+const PublicRoute = ({ children }) => {
+  const { isAuthenticated, loading } = useAuth();
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
+      </div>
+    );
+  }
+
+  if (isAuthenticated) {
+    return <Navigate to="/" replace />;
+  }
+
+  return children;
+};
+
 function App() {
   return (
-    <AppProvider>
-      <Router>
-        <div className="App">
-          <Layout>
+    <AuthProvider>
+      <AppProvider>
+        <Router>
+          <div className="App">
             <Routes>
-              <Route path="/" element={<Dashboard />} />
-              <Route path="/invoices" element={<Invoices />} />
-              <Route path="/invoices/create" element={<CreateInvoice />} />
-              <Route path="/invoices/:id" element={<SingleInvoice />} />
-              <Route path="/clients" element={<Clients />} />
-              <Route path="/clients/create" element={<CreateClient />} />
-              <Route path="/clients/:id" element={<SingleClient />} />
-              <Route path="/items" element={<Items />} />
-              <Route path="/items/create" element={<CreateItem />} />
-              <Route path="/items/:id" element={<SingleItem />} />
+              {/* Public routes */}
+              <Route path="/login" element={
+                <PublicRoute>
+                  <Login />
+                </PublicRoute>
+              } />
+              <Route path="/register" element={
+                <PublicRoute>
+                  <Register />
+                </PublicRoute>
+              } />
+
+              {/* Protected routes */}
+              <Route path="/" element={
+                <ProtectedRoute>
+                  <Layout>
+                    <Dashboard />
+                  </Layout>
+                </ProtectedRoute>
+              } />
+              
+              <Route path="/invoices" element={
+                <ProtectedRoute>
+                  <Layout>
+                    <Invoices />
+                  </Layout>
+                </ProtectedRoute>
+              } />
+              
+              <Route path="/invoices/create" element={
+                <ProtectedRoute>
+                  <Layout>
+                    <CreateInvoice />
+                  </Layout>
+                </ProtectedRoute>
+              } />
+              
+              <Route path="/invoices/:id" element={
+                <ProtectedRoute>
+                  <Layout>
+                    <SingleInvoice />
+                  </Layout>
+                </ProtectedRoute>
+              } />
+              
+              <Route path="/clients" element={
+                <ProtectedRoute allowedRoles={['staff']}>
+                  <Layout>
+                    <Clients />
+                  </Layout>
+                </ProtectedRoute>
+              } />
+              
+              <Route path="/clients/create" element={
+                <ProtectedRoute allowedRoles={['staff']}>
+                  <Layout>
+                    <CreateClient />
+                  </Layout>
+                </ProtectedRoute>
+              } />
+              
+              <Route path="/clients/:id" element={
+                <ProtectedRoute>
+                  <Layout>
+                    <SingleClient />
+                  </Layout>
+                </ProtectedRoute>
+              } />
+              
+              <Route path="/items" element={
+                <ProtectedRoute>
+                  <Layout>
+                    <Items />
+                  </Layout>
+                </ProtectedRoute>
+              } />
+              
+              <Route path="/items/create" element={
+                <ProtectedRoute allowedRoles={['staff']}>
+                  <Layout>
+                    <CreateItem />
+                  </Layout>
+                </ProtectedRoute>
+              } />
+              
+              <Route path="/items/:id" element={
+                <ProtectedRoute>
+                  <Layout>
+                    <SingleItem />
+                  </Layout>
+                </ProtectedRoute>
+              } />
+
+              {/* Catch all route */}
+              <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
-          </Layout>
-          <Toaster position="top-right" />
-        </div>
-      </Router>
-    </AppProvider>
+            <Toaster position="top-right" />
+          </div>
+        </Router>
+      </AppProvider>
+    </AuthProvider>
   );
 }
 
