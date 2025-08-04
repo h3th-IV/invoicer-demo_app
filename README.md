@@ -14,12 +14,10 @@
 - Invoice List View (table, sorting)
 - Mark Invoice as Paid/Unpaid (toggle)
 - Client Management (CRUD)
-- AI-Powered Query (planned bonus)
+- AI-Powered Query (left out because of time)
 
 ## Features Not Completed
-- Overdue Handling
 - PDF Export
-- Authentication
 - (Others TBD based on time)
 
 ## Thought Process and Prioritization
