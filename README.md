@@ -63,7 +63,7 @@ docker-compose up -d --build
 3. Start creating clients, items, and invoices
 4. Use AI Insights for intelligent data analysis
 
-## 🛠️ Manual Setup (Alternative)
+## Manual Setup (Alternative)
 
 ### Backend Setup
 ```bash
