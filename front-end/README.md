@@ -62,6 +62,16 @@ front-end/
 - **Protected Routes**: Role-based access control
 - **Session Persistence**: Automatic login state restoration
 
+### AI-Powered Insights 🧠
+- **Natural Language Queries**: Ask questions in plain English
+- **Query Suggestions**: Pre-built templates for common questions
+- **Intelligent Analysis**: AI-powered insights and recommendations
+- **Churn Risk Detection**: Identifies clients at risk of leaving
+- **Product Recommendations**: Suggests likely buyers for products
+- **Pattern Analysis**: Detects significant changes in client behavior
+- **Cross-sell Opportunities**: AI-powered recommendations for upselling
+- **Query History**: Tracks and displays recent queries
+
 ### Dashboard
 - **Statistics Overview**: Total invoices, clients, items, and revenue
 - **Recent Invoices**: Latest 5 invoices with overdue highlighting
@@ -179,6 +189,7 @@ front-end/
 - **invoiceAPI**: Invoice management endpoints
 - **clientAPI**: Client management endpoints
 - **itemAPI**: Item management endpoints
+- **aiAPI**: AI-powered query and analytics endpoints
 
 ### Request/Response Handling
 - **Axios Interceptors**: Automatic token injection
@@ -221,6 +232,12 @@ front-end/
 - **Logout Handling**: Secure logout with token cleanup
 - **Route Protection**: Protected route components
 
+### AI Integration
+- **OpenAI API**: Secure integration with GPT-3.5-turbo
+- **Query Processing**: Natural language to structured data
+- **Error Handling**: Graceful handling of API failures
+- **Rate Limiting**: Built-in protection against API abuse
+
 ### Data Validation
 - **Client-side Validation**: Real-time form validation
 - **Input Sanitization**: Safe input handling
@@ -232,12 +249,45 @@ front-end/
 - **Mobile Browsers**: iOS Safari, Chrome Mobile
 - **Progressive Enhancement**: Graceful degradation
 
+## 🧠 AI Features Usage
+
+### Accessing AI Insights
+1. Navigate to "AI Insights" in the sidebar
+2. Type your question in natural language
+3. Click "Ask AI" to get intelligent analysis
+4. Review insights, recommendations, and actionable items
+
+### Example Queries
+- "Which clients show signs of churn risk?"
+- "Who is most likely to buy our premium services?"
+- "Suggest products for cross-selling to existing clients"
+- "Identify clients with changing buying patterns"
+
+### AI Setup Requirements
+- OpenAI API key configured in backend
+- Internet connection for API calls
+- Sufficient OpenAI credits
+
 ## Development
 
-### Getting Started
+#### Prerequisites
+- Node.js 18 or higher
+- Backend API running on `http://localhost:5000`
+- OpenAI API key configured in backend (for AI features)
+
+#### Quick Start with Docker
+```bash
+# From the root directory
+docker-compose up --build
+```
+
+#### Manual Setup
 1. Install dependencies: `npm install`
 2. Start development server: `npm start`
 3. Open browser to `http://localhost:3000`
+
+#### Environment Variables
+- `REACT_APP_API_BASE_URL`: Backend API URL (default: http://localhost:5000)
 
 ### Available Scripts
 - `npm start`: Start development server

@@ -191,10 +191,53 @@ All API responses follow a standardized format:
 ```
 
 ## Running the Application
+
+### Prerequisites
+- Node.js 20 or higher
+- MongoDB instance
+- OpenAI API key (for AI features)
+
+### Quick Start with Docker
+```bash
+# From the root directory
+docker-compose up --build
+```
+
+### Manual Setup
 1. Install dependencies: `npm install`
-2. Set up environment variables
+2. Set up environment variables (see below)
 3. Start the server: `npm start`
 4. API will be available at `http://localhost:5000`
+
+### Environment Variables Setup
+
+Create a `.env` file in the `back-end` directory:
+
+```env
+# Database Configuration
+MONGO_URI=mongodb://invoicer:password@localhost:27017/invoicing?authSource=admin
+
+# JWT Configuration
+JWT_SECRET=your-super-secret-jwt-key-change-this-in-production
+
+# OpenAI Configuration (Required for AI features)
+OPENAI_API_KEY=sk-your-openai-api-key-here
+
+# Environment
+NODE_ENV=development
+PORT=5000
+```
+
+### Getting OpenAI API Key
+
+1. **Visit OpenAI Platform**: Go to [https://platform.openai.com/](https://platform.openai.com/)
+2. **Sign Up/Login**: Create an account or log in
+3. **Navigate to API Keys**: Click your profile → "API Keys" or visit [https://platform.openai.com/api-keys](https://platform.openai.com/api-keys)
+4. **Create New Key**: Click "Create new secret key" and give it a name
+5. **Copy the Key**: The key starts with `sk-` (copy it immediately as you won't see it again)
+6. **Add to .env**: Replace `sk-your-openai-api-key-here` with your actual key
+
+**Note**: New users get free credits. Check usage at [https://platform.openai.com/usage](https://platform.openai.com/usage)
 
 ## Dependencies
 - express: ^5.1.0
