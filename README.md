@@ -2,7 +2,7 @@
 
 A comprehensive invoicing system with AI-powered insights, built with Node.js, React, MongoDB, and OpenAI integration.
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Prerequisites
 - Docker and Docker Compose
@@ -83,54 +83,54 @@ npm start
 Ensure MongoDB is running on localhost:27017 with the credentials specified in the .env file.
 
 
-## ✨ Features Completed
+## Features Completed
 
 ### Core Invoicing Features
-- ✅ **Invoice Creation Form** - Auto-generated numbers, validation, total calculation
-- ✅ **Invoice List View** - Table with sorting, pagination, filtering
-- ✅ **Invoice Status Management** - Mark as paid/unpaid with toggle
-- ✅ **Invoice Details** - Complete invoice information display
+- [X] **Invoice Creation Form** - Auto-generated numbers, validation, total calculation
+- [X] **Invoice List View** - Table with sorting, pagination, filtering
+- [X] **Invoice Status Management** - Mark as paid/unpaid with toggle
+- [X] **Invoice Details** - Complete invoice information display
 
 ### Client Management
-- ✅ **Client CRUD Operations** - Create, Read, Update, Delete
-- ✅ **Client Search & Filtering** - Find clients quickly
-- ✅ **Client Analytics** - Purchase history and statistics
-- ✅ **Client Status Management** - Active/Inactive status
+- [X] **Client CRUD Operations** - Create, Read, Update, Delete
+- [X] **Client Search & Filtering** - Find clients quickly
+- [X] **Client Analytics** - Purchase history and statistics
+- [X] **Client Status Management** - Active/Inactive status
 
 ### Inventory Management
-- ✅ **Item CRUD Operations** - Complete inventory management
-- ✅ **Stock Tracking** - Automatic quantity updates
-- ✅ **Stock Validation** - Prevents overselling
-- ✅ **Item Performance Analytics** - Sales and revenue tracking
+- [X] **Item CRUD Operations** - Complete inventory management
+- [X] **Stock Tracking** - Automatic quantity updates
+- [X] **Stock Validation** - Prevents overselling
+- [X] **Item Performance Analytics** - Sales and revenue tracking
 
 ### Authentication & Security
-- ✅ **Staff Authentication** - Register, Login with JWT
-- ✅ **Role-based Access** - Staff vs Admin roles
-- ✅ **Protected Routes** - Secure API endpoints
-- ✅ **Session Management** - Persistent login state
+- [X] **Staff Authentication** - Register, Login with JWT
+- [X] **Role-based Access** - Staff vs Admin roles
+- [X] **Protected Routes** - Secure API endpoints
+- [X] **Session Management** - Persistent login state
 
 ### Dashboard & Analytics
-- ✅ **Comprehensive Dashboard** - Statistics and recent activity
-- ✅ **Overdue Detection** - Automatic highlighting of late invoices
-- ✅ **Revenue Analytics** - Total revenue and trends
-- ✅ **Real-time Updates** - Live data synchronization
+- [X] **Comprehensive Dashboard** - Statistics and recent activity
+- [X] **Overdue Detection** - Automatic highlighting of late invoices
+- [X] **Revenue Analytics** - Total revenue and trends
+- [X] **Real-time Updates** - Live data synchronization
 
-### AI-Powered Insights 🧠
-- ✅ **Natural Language Queries** - Ask questions in plain English
-- ✅ **Product Recommendations** - AI suggests likely buyers
-- ✅ **Churn Risk Analysis** - Identifies at-risk clients
-- ✅ **Pattern Analysis** - Detects significant changes
-- ✅ **Cross-sell Opportunities** - AI-powered recommendations
-- ✅ **Intelligent Insights** - Actionable business recommendations
+### AI-Powered Insights 
+- [X] **Natural Language Queries** - Ask questions in plain English
+- [X] **Product Recommendations** - AI suggests likely buyers
+- [X] **Churn Risk Analysis** - Identifies at-risk clients
+- [X] **Pattern Analysis** - Detects significant changes
+- [X] **Cross-sell Opportunities** - AI-powered recommendations
+- [X] **Intelligent Insights** - Actionable business recommendations
 
 ### User Experience
-- ✅ **Responsive Design** - Works on desktop and mobile
-- ✅ **Modern UI** - Beautiful interface with Tailwind CSS
-- ✅ **Real-time Validation** - Form validation and error handling
-- ✅ **Loading States** - Smooth user experience
-- ✅ **Toast Notifications** - User feedback and alerts
+- [X] **Responsive Design** - Works on desktop and mobile
+- [X] **Modern UI** - Beautiful interface with Tailwind CSS
+- [X] **Real-time Validation** - Form validation and error handling
+- [X] **Loading States** - Smooth user experience
+- [X] **Toast Notifications** - User feedback and alerts
 
-## 🚧 Features Not Completed
+## Features Not Completed
 - PDF Export
 - Email Notifications
 - Multi-currency Support
@@ -140,7 +140,7 @@ Ensure MongoDB is running on localhost:27017 with the credentials specified in t
 - Voice Queries
 - Advanced AI Models
 
-## 🏗️ Architecture & Technology Stack
+## Architecture & Technology Stack
 
 ### Backend
 - **Runtime**: Node.js 20+
@@ -166,7 +166,7 @@ Ensure MongoDB is running on localhost:27017 with the credentials specified in t
 - **Environment**: Environment variable configuration
 - **Security**: API key management and data sanitization
 
-## 🔧 Development & Deployment
+## Development & Deployment
 
 ### Development Commands
 ```bash
@@ -193,7 +193,7 @@ docker-compose -f docker-compose.prod.yml up --build
 # (Instructions vary by platform)
 ```
 
-## 📊 API Documentation
+## API Documentation
 
 ### Authentication Endpoints
 - `POST /auth/staff/register` - Register new staff
@@ -225,7 +225,7 @@ docker-compose -f docker-compose.prod.yml up --build
 - `GET /ai/insights/dashboard` - Get insights dashboard
 - `GET /ai/suggestions` - Get query suggestions
 
-## 🧠 AI Features Usage
+## AI Features Usage
 
 ### Example Queries
 1. **Churn Risk**: "Which clients show signs of churn risk?"
@@ -238,7 +238,7 @@ docker-compose -f docker-compose.prod.yml up --build
 - Internet connection for API calls
 - Sufficient OpenAI credits
 
-## 🔒 Security Considerations
+## Security Considerations
 
 - API keys stored in environment variables
 - JWT tokens for authentication
@@ -247,7 +247,7 @@ docker-compose -f docker-compose.prod.yml up --build
 - CORS configuration
 - Rate limiting on AI endpoints
 
-## 🐛 Troubleshooting
+## Troubleshooting
 
 ### Common Issues
 1. **OpenAI API Errors**: Check API key and internet connection
@@ -261,7 +261,7 @@ docker-compose -f docker-compose.prod.yml up --build
 NODE_ENV=development DEBUG=* npm start
 ```
 
-## 📈 Performance & Monitoring
+## Performance & Monitoring
 
 - Response times typically under 3 seconds
 - AI queries cached to reduce API calls
@@ -269,7 +269,7 @@ NODE_ENV=development DEBUG=* npm start
 - Real-time data synchronization
 - Error logging and monitoring
 
-## 🤝 Contributing
+## Contributing
 
 1. Fork the repository
 2. Create a feature branch
@@ -277,6 +277,6 @@ NODE_ENV=development DEBUG=* npm start
 4. Test thoroughly
 5. Submit a pull request
 
-## 📄 License
+## License
 
 This project is licensed under the ISC License.

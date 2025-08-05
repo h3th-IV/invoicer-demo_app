@@ -62,7 +62,7 @@ front-end/
 - **Protected Routes**: Role-based access control
 - **Session Persistence**: Automatic login state restoration
 
-### AI-Powered Insights 🧠
+### AI-Powered Insights
 - **Natural Language Queries**: Ask questions in plain English
 - **Query Suggestions**: Pre-built templates for common questions
 - **Intelligent Analysis**: AI-powered insights and recommendations
@@ -249,7 +249,7 @@ front-end/
 - **Mobile Browsers**: iOS Safari, Chrome Mobile
 - **Progressive Enhancement**: Graceful degradation
 
-## 🧠 AI Features Usage
+## AI Features Usage
 
 ### Accessing AI Insights
 1. Navigate to "AI Insights" in the sidebar
